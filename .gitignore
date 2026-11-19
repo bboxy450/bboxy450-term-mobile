@@ -1,0 +1,5 @@
+target/
+*.apk
+*.app/
+build/
+.DS_Store
