@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2026 Boxy (bboxy450) and contributors.
+SPDX-License-Identifier: LicenseRef-Respectful-Slop-1.0-Draft
+Project: bboxy450-term-mobile — https://github.com/bboxy450/bboxy450-term-mobile
+Credit copied, adapted and translated reuse accurately; independent inspiration credit requested.
+Policy: https://github.com/bboxy450/bboxy450-term-mobile/blob/main/ATTRIBUTION.md
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bboxy450.term.mobile" android:versionCode="1" android:versionName="0.1.0">
+    <uses-sdk android:minSdkVersion="28" android:targetSdkVersion="34" />
+    <application android:label="bboxy450 Inbox" android:hasCode="false"
+        android:debuggable="true" android:extractNativeLibs="true"
+        android:theme="@android:style/Theme.Material.NoActionBar">
+        <activity android:name="android.app.NativeActivity" android:exported="true"
+            android:screenOrientation="portrait" android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|density">
+            <meta-data android:name="android.app.lib_name" android:value="bboxy450_term_mobile" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

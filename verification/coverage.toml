@@ -1,0 +1,15 @@
+# Copyright 2026 Boxy (bboxy450) and contributors.
+# SPDX-License-Identifier: LicenseRef-Respectful-Slop-1.0-Draft
+# Project: bboxy450-term-mobile — https://github.com/bboxy450/bboxy450-term-mobile
+# Credit copied, adapted and translated reuse accurately; independent inspiration credit requested.
+# Policy: https://github.com/bboxy450/bboxy450-term-mobile/blob/main/ATTRIBUTION.md
+
+[[crate]]
+name = "bboxy450-term-mobile"
+models = ["InboxLifecycle", "BrokenSurfaceRetention"]
+source = ["crates/bboxy450-term-mobile/src/mobile.rs", "crates/bboxy450-term-mobile/src/inbox.rs"]
+implementation_only = [
+  "UI kit layout and GPU output, actual platform lifecycle callbacks, touch coordinate conversion and IME",
+  "JSON Schema interpretation and answer value parsing",
+  "GPU timeouts, lost surfaces, initialization failure and OS process termination",
+]

@@ -1,0 +1,21 @@
+# Copyright 2026 Boxy (bboxy450) and contributors.
+# SPDX-License-Identifier: LicenseRef-Respectful-Slop-1.0-Draft
+# Project: bboxy450-term-mobile — https://github.com/bboxy450/bboxy450-term-mobile
+# Credit copied, adapted and translated reuse accurately; independent inspiration credit requested.
+# Policy: https://github.com/bboxy450/bboxy450-term-mobile/blob/main/ATTRIBUTION.md
+
+[workspace]
+members = ["crates/bboxy450-term-mobile"]
+exclude = ["vendor/bboxy450-term"]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+repository = "https://github.com/bboxy450/bboxy450-term-mobile"
+
+[workspace.dependencies]
+bbt-ui-model = { package = "bboxy450-ui-core", path = "vendor/bboxy450-term/crates/bbt-ui-model" }
+bbt-ui = { package = "bboxy450-ui", path = "vendor/bboxy450-term/crates/bbt-ui" }
+bbt-render = { package = "bboxy450-render", path = "vendor/bboxy450-term/crates/bbt-render" }

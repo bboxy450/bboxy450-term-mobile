@@ -1,0 +1,37 @@
+# Copyright 2026 Boxy (bboxy450) and contributors.
+# SPDX-License-Identifier: LicenseRef-Respectful-Slop-1.0-Draft
+# Project: bboxy450-term-mobile — https://github.com/bboxy450/bboxy450-term-mobile
+# Credit copied, adapted and translated reuse accurately; independent inspiration credit requested.
+# Policy: https://github.com/bboxy450/bboxy450-term-mobile/blob/main/ATTRIBUTION.md
+
+[package]
+name = "bboxy450-term-mobile"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+license-file = "../../LICENSE"
+publish = false
+
+[lib]
+crate-type = ["rlib", "staticlib", "cdylib"]
+
+[dependencies]
+bbt-ui-model.workspace = true
+bbt-ui.workspace = true
+bbt-render.workspace = true
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[target.'cfg(any(target_os = "ios", target_os = "android"))'.dependencies]
+pollster = "0.4"
+wgpu = { version = "=30.0.1", default-features = false, features = ["std", "wgsl"] }
+winit = { version = "0.30.13", default-features = false, features = ["rwh_06", "android-native-activity"] }
+
+[target.'cfg(target_os = "android")'.dependencies]
+wgpu = { version = "=30.0.1", default-features = false, features = ["vulkan", "gles"] }
+android_logger = "0.15"
+log = "0.4"
+
+[dev-dependencies]
+bbt-yarn = { package = "bboxy450-yarn", path = "../../vendor/bboxy450-term/crates/bbt-yarn", default-features = false, features = ["macros", "model"] }

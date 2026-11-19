@@ -1,0 +1,3 @@
+[submodule "vendor/bboxy450-term"]
+	path = vendor/bboxy450-term
+	url = https://github.com/bboxy450/bboxy450-term
