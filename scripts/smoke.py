@@ -123,19 +123,20 @@ def near(pixel, expected):
     return all(abs(a - b) <= 5 for a, b in zip(pixel, expected))
 
 
-def capture(platform, shot, text_available):
+def capture(platform, shot):
     path = OUT / f"{platform}.png"
     def frame():
         shot(path)
         image = Shot(path)
         button = image.inbox()
-        if button and text_available:
-            _, y = button
-            if image.ink_samples(INK, y - image.width // 9, y - 24) < 25:
-                return None
-        return button
+        if not button:
+            return None
+        _, y = button
+        if image.ink_samples(INK, y - image.width // 9, y - 24) >= 25:
+            return button
+        return None
     first_button = until(f"{platform} Inbox pixels", frame, seconds=25)
-    print(f"{platform}: verified portrait Inbox cards and controls in {path}")
+    print(f"{platform}: verified portrait Inbox cards, controls and question ink in {path}")
     return first_button
 
 
@@ -178,9 +179,7 @@ def ios():
                 line = until(f"iOS {READY} (see {log})", lambda: marker(log, READY),
                              seconds=60, process=app)
                 print(line)
-                capture("ios", lambda path: output(*IOS, "io", udid, "screenshot", path), "text=true" in line)
-                if "text=true" not in line:
-                    raise RuntimeError("the pinned kit drew the iOS shell without mobile text")
+                capture("ios", lambda path: output(*IOS, "io", udid, "screenshot", path))
             finally:
                 stop(app)
     finally:
@@ -248,8 +247,7 @@ def android():
 
             ready = until(f"Android {READY} (see {log})", lambda: messages(READY), process=emulator)
             print(ready)
-            text_available = "text=true" in ready
-            x, y = capture("android", shot, text_available)
+            x, y = capture("android", shot)
             adb("shell", "input", "tap", str(x), str(y))
             answered = OUT / "android-answered.png"
 
@@ -257,7 +255,7 @@ def android():
                 shot(answered)
                 frame = Shot(answered)
                 return near(frame.pixel(x, y), CARD) and (
-                    not text_available or frame.ink_samples(ANSWERED, y - 24, y + 32) > 8
+                    frame.ink_samples(ANSWERED, y - 24, y + 32) > 8
                 )
 
             until("Android tap removed the first answer button", answer_visible, seconds=15, process=emulator)
@@ -267,8 +265,6 @@ def android():
             until("Android surface recreation", lambda: messages(READY, after=SUSPEND), process=emulator)
             until("Android answer retained through resume", answer_visible, seconds=15, process=emulator)
             print(f"android: tap changed the first row, and the change survived surface recreation ({answered})")
-            if "text=true" not in ready:
-                raise RuntimeError("the pinned kit drew the Android shell without mobile text")
         finally:
             stop(emulator)
 

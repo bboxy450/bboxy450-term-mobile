@@ -9,10 +9,7 @@ use bbt_render::{
     chrome::{ChromeRenderer, ChromeTarget, icons::Assets},
     device::DeviceContext,
 };
-use bbt_ui_model::{
-    draw::{Prim, TextStyle},
-    layout::Rect,
-};
+use bbt_ui_model::layout::Rect;
 use std::sync::Arc;
 use wgpu::CurrentSurfaceTexture;
 use winit::{
@@ -74,7 +71,6 @@ struct Display {
     config: wgpu::SurfaceConfiguration,
     chrome: ChromeRenderer,
     ready: bool,
-    text_available: bool,
 }
 
 impl Display {
@@ -126,23 +122,15 @@ impl Display {
         };
         surface.configure(&context.device, &config);
         let chrome = ChromeRenderer::with_context(context, Assets::default())?;
-        // The initial pin can draw shapes on mobile while the shared text backend lands.
-        let text_available =
-            bbt_render::chrome::text::measure("Inbox", TextStyle::default(), None).is_ok();
         Ok(Self {
             surface,
             config,
             chrome,
             ready: false,
-            text_available,
         })
     }
 
-    fn draw(
-        &mut self,
-        window: &Window,
-        frame: &mut Frame,
-    ) -> Result<bool, Box<dyn std::error::Error>> {
+    fn draw(&mut self, window: &Window, frame: &Frame) -> Result<bool, Box<dyn std::error::Error>> {
         let size = surface_size(window);
         if size.width == 0 || size.height == 0 {
             return Ok(true);
@@ -178,12 +166,6 @@ impl Display {
         };
         let view = texture.texture.create_view(&Default::default());
         let mut encoder = device.create_command_encoder(&Default::default());
-        if !self.text_available {
-            frame
-                .draw
-                .primitives
-                .retain(|p| !matches!(p, Prim::Text { .. }));
-        }
         self.chrome.begin_frame();
         self.chrome.draw(
             &frame.draw,
@@ -203,8 +185,8 @@ impl Display {
         queue.present(texture);
         if !self.ready {
             report(&format!(
-                "BBOXY_INBOX_READY text={} backend={:?}",
-                self.text_available, self.chrome.context.adapter_info.backend
+                "BBOXY_INBOX_READY backend={:?}",
+                self.chrome.context.adapter_info.backend
             ));
             self.ready = true;
         }
@@ -396,8 +378,8 @@ impl ApplicationHandler for App {
                     return;
                 };
                 let (screen, safe, scale) = viewport(&window);
-                let mut frame = self.inbox.layout(screen, safe, scale);
-                match display.draw(&window, &mut frame) {
+                let frame = self.inbox.layout(screen, safe, scale);
+                match display.draw(&window, &frame) {
                     Ok(true) => {}
                     Ok(false) => {
                         self.display = None;
